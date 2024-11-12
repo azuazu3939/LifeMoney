@@ -5,32 +5,28 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri("https://repo.papermc.io/repository/maven-public/")
-    }
-
-    maven {
-        url = uri("https://oss.sonatype.org/content/groups/public/")
-    }
-
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.maven.apache.org/maven2/")
+    maven("https://mvn.lumine.io/repository/maven-public/")
 }
 
 dependencies {
     api(libs.org.jetbrains.kotlin.kotlin.stdlib.jdk8)
     compileOnly(libs.io.papermc.paper.paper.api)
+    compileOnly("io.lumine:Mythic-Dist:5.7.2")
+    implementation("com.zaxxer:HikariCP:6.0.0")
 }
 
 group = "net.azisaba"
 version = "1.0.0"
 description = "LifeMoney"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -38,10 +34,13 @@ publishing {
     }
 }
 
-tasks.withType<JavaCompile>() {
-    options.encoding = "UTF-8"
-}
+tasks {
+    withType<JavaCompile> { options.encoding = "UTF-8" }
+    withType<Javadoc> { options.encoding = "UTF-8" }
+    //base.archivesName.set("NPCShop")
 
-tasks.withType<Javadoc>() {
-    options.encoding = "UTF-8"
+    shadowJar {
+        relocate("org.jetbrains", "net.azisaba.npcshop.lib.org.jetbrains")
+        relocate("com.zaxxer.hikari", "net.azisaba.npcshop.lib.com.zaxxer")
+    }
 }
