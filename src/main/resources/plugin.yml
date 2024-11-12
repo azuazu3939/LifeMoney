@@ -1,0 +1,4 @@
+name: LifeMoney
+version: '1.0.0'
+main: net.azisaba.lifeMoney.LifeMoney
+api-version: '1.21'
